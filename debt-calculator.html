@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>India Debt Reality Calculator — Free Tool for Indian Families</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f0; color: #1a1a1a; min-height: 100vh; padding: 2rem 1rem; }
+  .page-wrap { max-width: 720px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 2rem; }
+  .header h1 { font-size: 24px; font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem; }
+  .header p { font-size: 15px; color: #666; line-height: 1.6; max-width: 520px; margin: 0 auto 0.5rem; }
+  .built-by { font-size: 13px; color: #999; margin-top: 0.75rem; }
+  .built-by a { color: #185FA5; text-decoration: none; }
+  .section { background: #fff; border: 1px solid #e5e5e0; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+  .section-title { font-size: 12px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1.25rem; }
+  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  @media (max-width: 480px) { .input-row { grid-template-columns: 1fr; } }
+  .input-group { display: flex; flex-direction: column; gap: 6px; }
+  .input-group label { font-size: 13px; color: #555; }
+  .input-group input, .input-group select { padding: 9px 12px; border-radius: 8px; border: 1px solid #ddd; background: #fafafa; color: #1a1a1a; font-size: 14px; width: 100%; outline: none; transition: border 0.2s; }
+  .input-group input:focus, .input-group select:focus { border-color: #185FA5; }
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1rem; }
+  @media (max-width: 480px) { .metrics { grid-template-columns: 1fr 1fr; } }
+  .metric { background: #f8f8f5; border-radius: 8px; padding: 1rem; }
+  .metric-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+  .metric-value { font-size: 20px; font-weight: 600; color: #1a1a1a; }
+  .metric-value.danger { color: #A32D2D; }
+  .chart-wrap { position: relative; width: 100%; height: 220px; margin: 1rem 0; }
+  .ai-box { background: #EBF3FC; border-radius: 8px; padding: 1rem 1.25rem; margin-top: 1rem; border-left: 3px solid #185FA5; }
+  .ai-label { font-size: 12px; color: #185FA5; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .ai-text { font-size: 14px; color: #1a1a1a; line-height: 1.7; }
+  .tab-row { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .tab { padding: 7px 16px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px; cursor: pointer; background: #fff; color: #666; transition: all 0.2s; font-weight: 500; }
+  .tab:hover { border-color: #185FA5; color: #185FA5; }
+  .tab.active { background: #185FA5; color: #fff; border-color: #185FA5; }
+  .warning-box { background: #FAEEDA; border-radius: 8px; padding: 0.875rem 1rem; margin-top: 0.75rem; border: 1px solid #EF9F27; }
+  .warning-text { font-size: 13px; color: #633806; line-height: 1.6; }
+  .compare-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.25rem; }
+  @media (max-width: 480px) { .compare-grid { grid-template-columns: 1fr; } }
+  .compare-card { border-radius: 8px; padding: 1rem; border: 1px solid #eee; }
+  .compare-card.bad { background: #FCEBEB; border-color: #F09595; }
+  .compare-card.mid { background: #FAEEDA; border-color: #FAC775; }
+  .compare-card.good { background: #EAF3DE; border-color: #97C459; }
+  .compare-card-title { font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+  .compare-card.bad .compare-card-title { color: #791F1F; }
+  .compare-card.mid .compare-card-title { color: #633806; }
+  .compare-card.good .compare-card-title { color: #27500A; }
+  .compare-card-val { font-size: 22px; font-weight: 700; }
+  .compare-card.bad .compare-card-val { color: #A32D2D; }
+  .compare-card.mid .compare-card-val { color: #854F0B; }
+  .compare-card.good .compare-card-val { color: #3B6D11; }
+  .compare-card-sub { font-size: 12px; margin-top: 3px; }
+  .compare-card.bad .compare-card-sub { color: #A32D2D; }
+  .compare-card.mid .compare-card-sub { color: #854F0B; }
+  .compare-card.good .compare-card-sub { color: #3B6D11; }
+  .escape-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0ec; font-size: 14px; gap: 12px; }
+  .escape-row:last-child { border-bottom: none; }
+  .escape-row span:first-child { color: #555; }
+  .escape-row span:last-child { font-weight: 600; white-space: nowrap; }
+  .stat-highlight { background: #f8f8f5; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; text-align: center; }
+  .stat-highlight .big { font-size: 36px; font-weight: 700; color: #A32D2D; }
+  .stat-highlight .sub { font-size: 14px; color: #666; margin-top: 4px; }
+  .footer { text-align: center; font-size: 13px; color: #aaa; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e5e5e0; line-height: 1.8; }
+  .footer a { color: #185FA5; text-decoration: none; }
+  .share-btn { display: inline-block; margin-top: 1.5rem; padding: 10px 24px; background: #185FA5; color: #fff; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; }
+  .share-btn:hover { background: #0C447C; }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="header">
+    <h1>India Debt Reality Calculator</h1>
+    <p>A free tool that shows the real cost of different types of loans for Indian families — and the fastest path out of debt.</p>
+    <div class="built-by">Built by a BCom + CMA student passionate about financial literacy in India</div>
+  </div>
+
+  <div class="stat-highlight">
+    <div class="big" id="heroStat">₹9.8L</div>
+    <div class="sub">What ₹1 lakh borrowed at 10%/month becomes after 2 years with no repayment</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Enter your loan details</div>
+    <div class="input-row">
+      <div class="input-group">
+        <label>Loan amount (₹)</label>
+        <input type="number" id="principal" value="100000" min="1000" step="1000" />
+      </div>
+      <div class="input-group">
+        <label>Loan type</label>
+        <select id="loanType" onchange="syncRate()">
+          <option value="custom">Custom rate</option>
+          <option value="120" selected>Informal lender (10%/month)</option>
+          <option value="24">NBFC / fintech loan</option>
+          <option value="14">Bank personal loan</option>
+          <option value="8.5">Home loan</option>
+        </select>
+      </div>
+    </div>
+    <div class="input-row">
+      <div class="input-group">
+        <label>Annual interest rate (%)</label>
+        <input type="number" id="rate" value="120" min="1" max="360" step="0.5" />
+      </div>
+      <div class="input-group">
+        <label>Monthly repayment (₹)</label>
+        <input type="number" id="repayment" value="5000" min="0" step="500" />
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-row">
+    <div class="tab active" onclick="showTab('reality')">Reality check</div>
+    <div class="tab" onclick="showTab('compare')">Compare loan types</div>
+    <div class="tab" onclick="showTab('escape')">Escape plan</div>
+  </div>
+
+  <div id="tab-reality">
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-label">Monthly interest charge</div>
+        <div class="metric-value danger" id="monthlyInterest">₹10,000</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Balance after 1 year</div>
+        <div class="metric-value danger" id="bal12">—</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Balance after 2 years</div>
+        <div class="metric-value danger" id="bal24">—</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Debt growth over 24 months</div>
+      <div class="chart-wrap">
+        <canvas id="debtChart" role="img" aria-label="Line chart showing how debt balance changes over 24 months"></canvas>
+      </div>
+    </div>
+
+    <div id="warningBox" class="warning-box" style="display:none;">
+      <div class="warning-text" id="warningText"></div>
+    </div>
+
+    <div class="ai-box">
+      <div class="ai-label">What this means</div>
+      <div class="ai-text" id="aiText"></div>
+    </div>
+  </div>
+
+  <div id="tab-compare" style="display:none;">
+    <div class="section">
+      <div class="section-title">Same loan amount — what you owe after 2 years with no repayment</div>
+      <div class="compare-grid">
+        <div class="compare-card bad">
+          <div class="compare-card-title">Informal lender (10%/month)</div>
+          <div class="compare-card-val" id="cmp-informal">—</div>
+          <div class="compare-card-sub">120% annual interest</div>
+        </div>
+        <div class="compare-card mid">
+          <div class="compare-card-title">NBFC / fintech loan</div>
+          <div class="compare-card-val" id="cmp-nbfc">—</div>
+          <div class="compare-card-sub">24% annual interest</div>
+        </div>
+        <div class="compare-card good">
+          <div class="compare-card-title">Bank personal loan</div>
+          <div class="compare-card-val" id="cmp-bank">—</div>
+          <div class="compare-card-sub">14% annual interest</div>
+        </div>
+      </div>
+      <div class="chart-wrap" style="height:200px;">
+        <canvas id="compareChart" role="img" aria-label="Bar chart comparing debt after 2 years across three loan types"></canvas>
+      </div>
+    </div>
+    <div class="ai-box">
+      <div class="ai-label">The key insight</div>
+      <div class="ai-text">Borrowing from an informal lender at 10% monthly costs 7–8x more than a bank loan over 2 years. Even a high-cost NBFC loan at 24% annual is dramatically cheaper than informal lending. If your family has informal debt, refinancing it into any formal loan — even at 30–36% — is an immediate financial win. The single most powerful move is to replace informal debt with formal debt as fast as possible.</div>
+    </div>
+  </div>
+
+  <div id="tab-escape" style="display:none;">
+    <div class="section">
+      <div class="section-title">Your fastest path out of debt</div>
+      <div id="escapeContent"></div>
+    </div>
+    <div class="ai-box">
+      <div class="ai-label">The escape strategy</div>
+      <div class="ai-text" id="escapeAI"></div>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:1.5rem;">
+    <button class="share-btn" onclick="shareCalc()">Share this calculator</button>
+  </div>
+
+  <div class="footer">
+    Built with real data from RBI and SIDBI reports.<br/>
+    This tool is for financial education only. Always consult a certified financial advisor for personal advice.<br/>
+    <br/>
+    Free to share. If this helped you or someone you know, please pass it on.
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+let debtChartInst = null;
+let compareChartInst = null;
+
+function fmt(n) {
+  n = Math.round(n);
+  if (n >= 10000000) return '₹' + (n/10000000).toFixed(1) + 'Cr';
+  if (n >= 100000) return '₹' + (n/100000).toFixed(1) + 'L';
+  if (n >= 1000) return '₹' + Math.round(n/1000) + 'K';
+  return '₹' + n;
+}
+function fmtFull(n) {
+  return '₹' + Math.round(n).toLocaleString('en-IN');
+}
+function getBalance(principal, annualRate, monthlyRepayment, months) {
+  let bal = principal;
+  const mr = annualRate / 100 / 12;
+  for (let i = 0; i < months; i++) {
+    bal = bal * (1 + mr) - monthlyRepayment;
+    if (bal <= 0) return 0;
+    if (bal > 999999999) return bal;
+  }
+  return Math.max(0, bal);
+}
+function calcNeeded(principal, annualRate, months) {
+  const r = annualRate / 100 / 12;
+  if (r === 0) return principal / months;
+  return (principal * r * Math.pow(1+r, months)) / (Math.pow(1+r, months) - 1);
+}
+function calcMonthsSaved(principal, rate, repayment, extra) {
+  const mr = rate / 100 / 12;
+  let m1 = 0, b1 = principal;
+  while (b1 > 0 && m1 < 600) { b1 = b1*(1+mr) - repayment; m1++; if(b1<0)b1=0; }
+  let m2 = 0, b2 = principal;
+  while (b2 > 0 && m2 < 600) { b2 = b2*(1+mr) - (repayment+extra); m2++; if(b2<0)b2=0; }
+  return Math.max(0, m1 - m2);
+}
+
+function syncRate() {
+  const sel = document.getElementById('loanType').value;
+  if (sel !== 'custom') { document.getElementById('rate').value = sel; update(); }
+}
+
+function showTab(tab) {
+  ['reality','compare','escape'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach((el, i) => {
+    el.classList.toggle('active', ['reality','compare','escape'][i] === tab);
+  });
+  if (tab === 'compare') drawCompare();
+  if (tab === 'escape') buildEscape();
+}
+
+function update() {
+  const principal = parseFloat(document.getElementById('principal').value) || 100000;
+  const rate = parseFloat(document.getElementById('rate').value) || 120;
+  const repayment = parseFloat(document.getElementById('repayment').value) || 0;
+  const mr = rate / 100 / 12;
+  const monthlyInterest = principal * mr;
+
+  document.getElementById('monthlyInterest').textContent = fmtFull(Math.round(monthlyInterest));
+  document.getElementById('bal12').textContent = fmt(getBalance(principal, rate, repayment, 12));
+  document.getElementById('bal24').textContent = fmt(getBalance(principal, rate, repayment, 24));
+
+  const heroVal = getBalance(100000, 120, 0, 24);
+  document.getElementById('heroStat').textContent = fmt(heroVal);
+
+  const labels = [];
+  const data = [];
+  for (let m = 0; m <= 24; m++) {
+    labels.push(m === 0 ? 'Now' : 'M' + m);
+    data.push(Math.round(Math.min(getBalance(principal, rate, repayment, m), 99999999)));
+  }
+
+  if (debtChartInst) debtChartInst.destroy();
+  const ctx = document.getElementById('debtChart').getContext('2d');
+  debtChartInst = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Debt balance',
+        data,
+        borderColor: '#A32D2D',
+        backgroundColor: 'rgba(163,45,45,0.07)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 0,
+        borderWidth: 2.5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { maxTicksLimit: 7, color: '#999', font: { size: 11 } }, grid: { display: false } },
+        y: { ticks: { callback: v => fmt(v), color: '#999', font: { size: 11 } }, grid: { color: 'rgba(0,0,0,0.06)' } }
+      }
+    }
+  });
+
+  const wb = document.getElementById('warningBox');
+  const wt = document.getElementById('warningText');
+  if (repayment === 0) {
+    wb.style.display = 'block';
+    wt.textContent = 'No repayment entered. At ' + rate + '% annual, the debt grows by ' + fmtFull(Math.round(monthlyInterest)) + ' every month automatically — without you borrowing a single extra rupee.';
+  } else if (repayment < monthlyInterest) {
+    wb.style.display = 'block';
+    wt.textContent = 'Warning: your repayment of ' + fmtFull(repayment) + '/month is less than the monthly interest of ' + fmtFull(Math.round(monthlyInterest)) + '. The debt is still growing even though you are paying. You need at least ' + fmtFull(Math.round(monthlyInterest) + 1) + '/month just to stop the balance from increasing.';
+  } else {
+    wb.style.display = 'none';
+  }
+
+  const aiEl = document.getElementById('aiText');
+  if (rate >= 100) {
+    aiEl.textContent = 'This is a predatory loan. At ' + rate + '% annual (' + (rate/12).toFixed(1) + '% monthly), ₹1 lakh doubles in roughly ' + Math.round(72/(rate/12)) + ' months without repayment. Millions of Indian working-class families — electricians, small traders, daily wage workers — fall into this trap because banks reject them. The urgent action is to refinance this into any formal loan. Even a 36% NBFC loan is dramatically better than 120% informal debt. If the borrower has a credit score above 700, a personal loan is likely accessible.';
+  } else if (rate >= 30) {
+    aiEl.textContent = 'This is a high-cost loan. At ' + rate + '% annual, interest compounds aggressively. A monthly repayment of at least ' + fmtFull(Math.round(monthlyInterest * 1.5)) + ' would meaningfully reduce the principal over time. Try to refinance into a bank loan at 12–18% to cut the monthly burden significantly and reduce the total interest paid.';
+  } else {
+    aiEl.textContent = 'This is a manageable loan rate. At ' + rate + '% annual, consistent repayments of ' + fmtFull(repayment) + '/month will steadily reduce the principal. Stay consistent and never miss a payment — your CIBIL score depends on it, and a good score gives you access to cheaper loans in the future.';
+  }
+}
+
+function drawCompare() {
+  const principal = parseFloat(document.getElementById('principal').value) || 100000;
+  const rates = [120, 24, 14];
+  const vals = rates.map(r => Math.round(getBalance(principal, r, 0, 24)));
+  const colors = ['#A32D2D', '#854F0B', '#3B6D11'];
+
+  document.getElementById('cmp-informal').textContent = fmt(vals[0]);
+  document.getElementById('cmp-nbfc').textContent = fmt(vals[1]);
+  document.getElementById('cmp-bank').textContent = fmt(vals[2]);
+
+  if (compareChartInst) compareChartInst.destroy();
+  const ctx = document.getElementById('compareChart').getContext('2d');
+  compareChartInst = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Informal lender\n(10%/month)', 'NBFC / fintech\n(24%/year)', 'Bank loan\n(14%/year)'],
+      datasets: [{
+        data: vals,
+        backgroundColor: colors,
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' Balance: ' + fmtFull(ctx.raw) } } },
+      scales: {
+        x: { ticks: { color: '#888', font: { size: 11 } }, grid: { display: false } },
+        y: { ticks: { callback: v => fmt(v), color: '#888', font: { size: 11 } }, grid: { color: 'rgba(0,0,0,0.06)' } }
+      }
+    }
+  });
+}
+
+function buildEscape() {
+  const principal = parseFloat(document.getElementById('principal').value) || 100000;
+  const rate = parseFloat(document.getElementById('rate').value) || 120;
+  const repayment = parseFloat(document.getElementById('repayment').value) || 0;
+  const mr = rate / 100 / 12;
+  const monthlyInterest = principal * mr;
+  const container = document.getElementById('escapeContent');
+
+  if (repayment <= monthlyInterest) {
+    container.innerHTML = `
+      <p style="font-size:14px;color:#666;margin-bottom:1rem;">Current repayment is not reducing the principal. Here are your options:</p>
+      <div class="escape-row"><span>Minimum to stop debt growing</span><span style="color:#854F0B;">${fmtFull(Math.ceil(monthlyInterest * 1.05))}/month</span></div>
+      <div class="escape-row"><span>To clear in 3 years</span><span style="color:#3B6D11;">${fmtFull(Math.ceil(calcNeeded(principal, rate, 36)))}/month</span></div>
+      <div class="escape-row"><span>To clear in 5 years</span><span style="color:#3B6D11;">${fmtFull(Math.ceil(calcNeeded(principal, rate, 60)))}/month</span></div>
+      <div class="escape-row"><span>If refinanced to bank loan (14%) — clear in 3 years</span><span style="color:#185FA5;">${fmtFull(Math.ceil(calcNeeded(principal, 14, 36)))}/month</span></div>
+      <div class="escape-row"><span>Monthly saving by refinancing to bank rate</span><span style="color:#185FA5;">${fmtFull(Math.ceil(calcNeeded(principal, rate, 36)) - Math.ceil(calcNeeded(principal, 14, 36)))}/month saved</span></div>
+    `;
+    document.getElementById('escapeAI').textContent = 'The most powerful single move is refinancing. Replacing this ' + rate + '% loan with a bank loan at 14% reduces your required monthly payment from ' + fmtFull(Math.ceil(calcNeeded(principal, rate, 36))) + ' to just ' + fmtFull(Math.ceil(calcNeeded(principal, 14, 36))) + ' — for the same 3-year payoff. That difference stays in your family every month. If your credit score is 700+, visit your nearest bank branch and ask for a personal loan specifically to close this high-interest debt.';
+  } else {
+    let months = 0, bal = principal;
+    while (bal > 0 && months < 600) { bal = bal*(1+mr) - repayment; months++; if(bal<0)bal=0; }
+    const totalPaid = repayment * months;
+    const totalInterest = totalPaid - principal;
+    const saved2k = calcMonthsSaved(principal, rate, repayment, 2000);
+    container.innerHTML = `
+      <div class="escape-row"><span>Debt fully cleared in</span><span style="color:#3B6D11;">${months < 600 ? months + ' months (' + (months/12).toFixed(1) + ' years)' : 'More than 50 years — refinance urgently'}</span></div>
+      <div class="escape-row"><span>Total amount you will pay</span><span>${fmtFull(Math.round(totalPaid))}</span></div>
+      <div class="escape-row"><span>Original loan amount</span><span>${fmtFull(Math.round(principal))}</span></div>
+      <div class="escape-row"><span>Extra paid as interest</span><span style="color:#A32D2D;">${fmtFull(Math.round(totalInterest))}</span></div>
+      <div class="escape-row"><span>Adding ₹2,000 extra/month saves you</span><span style="color:#3B6D11;">${saved2k} months faster</span></div>
+    `;
+    document.getElementById('escapeAI').textContent = 'You are on track. Every extra rupee you add to your monthly repayment in the early months saves disproportionately more in total interest — because it reduces the principal that future interest is calculated on. Even adding ₹1,000 extra per month in the first year can shave months off your repayment timeline and save thousands in interest.';
+  }
+}
+
+function shareCalc() {
+  if (navigator.share) {
+    navigator.share({ title: 'India Debt Reality Calculator', text: 'A free tool showing the real cost of debt for Indian families. Built by a BCom + CMA student.', url: window.location.href });
+  } else {
+    navigator.clipboard.writeText(window.location.href).then(() => alert('Link copied to clipboard!'));
+  }
+}
+
+['principal','rate','repayment'].forEach(id => {
+  document.getElementById(id).addEventListener('input', update);
+});
+update();
+</script>
+</body>
+</html>
